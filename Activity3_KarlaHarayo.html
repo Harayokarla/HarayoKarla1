@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Practice Lab</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #2b6cb0 0%, #4c51bf 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            transition: background 0.5s ease;
+            cursor: default;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 500px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.5s ease;
+            position: relative;
+        }
+        
+        .color-palette {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .color-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: transform 0.3s ease, border 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+        
+        .color-option:hover {
+            transform: scale(1.1);
+        }
+        
+        .color-option.active {
+            border: 3px solid white;
+            transform: scale(1.1);
+        }
+        
+        .color-picker {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            cursor: move;
+            border: 4px solid white;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            z-index: 100;
+            transition: transform 0.2s ease;
+        }
+        
+        .color-picker:hover {
+            transform: scale(1.05);
+        }
+        
+        .color-picker.active {
+            animation: pulse 1s infinite alternate;
+        }
+        
+        @keyframes pulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.1); }
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+        
+        h1 {
+            color: #2d3748;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            transition: color 0.5s ease;
+        }
+        
+        .subtitle {
+            color: #718096;
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 1.5;
+            transition: color 0.5s ease;
+        }
+        
+        .info-box {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid #e9ecef;
+            transition: all 0.5s ease;
+        }
+        
+        .info-item {
+            margin-bottom: 20px;
+        }
+        
+        .info-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .label {
+            display: block;
+            color: #4a5568;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: color 0.5s ease;
+        }
+        
+        .value {
+            color: #2d3748;
+            font-size: 18px;
+            font-weight: 500;
+            padding: 8px 0;
+            transition: color 0.5s ease;
+        }
+        
+        .success-message {
+            display: flex;
+            align-items: center;
+            color: #38a169;
+            font-weight: 600;
+            font-size: 16px;
+            margin: 20px 0;
+            padding: 10px;
+            background: rgba(56, 161, 105, 0.1);
+            border-radius: 8px;
+            border-left: 4px solid #38a169;
+        }
+        
+        .success-icon {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .password-display {
+            letter-spacing: 3px;
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 16px 24px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+        }
+        
+        .btn-primary {
+            background: #4299e1;
+            color: white;
+            box-shadow: 0 4px 15px rgba(66, 153, 225, 0.4);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(66, 153, 225, 0.5);
+            background: #3182ce;
+        }
+        
+        .btn-secondary {
+            background: #edf2f7;
+            color: #4a5568;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .btn-secondary:hover {
+            background: #e2e8f0;
+            transform: translateY(-1px);
+        }
+        
+        .demo-text {
+            text-align: center;
+            margin-top: 20px;
+            color: #718096;
+            font-size: 14px;
+            font-style: italic;
+            padding: 10px;
+            background: rgba(113, 128, 150, 0.1);
+            border-radius: 8px;
+            transition: all 0.5s ease;
+        }
+        
+        .icon {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 25px;
+            }
+            
+            h1 {
+                font-size: 26px;
+            }
+            
+            .info-box {
+                padding: 20px;
+            }
+            
+            .color-option {
+                width: 35px;
+                height: 35px;
+            }
+            
+            .color-picker {
+                width: 50px;
+                height: 50px;
+                top: 15px;
+                right: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="color-picker" style="background: #2b6cb0;"></div>
+        
+        <div class="color-palette">
+            <div class="color-option active" style="background: #2b6cb0;" data-bg="#2b6cb0" data-container="#f8f9fa"></div>
+            <div class="color-option" style="background: #2d3748;" data-bg="#2d3748" data-container="#e2e8f0"></div>
+            <div class="color-option" style="background: #805ad5;" data-bg="#805ad5" data-container="#faf5ff"></div>
+            <div class="color-option" style="background: #d53f8c;" data-bg="#d53f8c" data-container="#fff5f7"></div>
+            <div class="color-option" style="background: #38a169;" data-bg="#38a169" data-container="#f0fff4"></div>
+            <div class="color-option" style="background: #dd6b20;" data-bg="#dd6b20" data-container="#fffaf0"></div>
+        </div>
+        
+        <div class="header">
+            <h1>JavaScript Practice Lab</h1>
+            <p class="subtitle">Drag the color circle around and click to change theme colors</p>
+        </div>
+        
+        <div class="info-box">
+            <div class="info-item">
+                <span class="label">Username</span>
+                <div class="value">student</div>
+            </div>
+            <div class="info-item">
+                <span class="label">Password</span>
+                <div class="value">
+                    <span class="password-display">......</span>
+                </div>
+            </div>
+            
+            <div class="success-message">
+                <span class="success-icon">✓</span>
+                <span>Success! - Guest Access Enabled</span>
+            </div>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="btn btn-primary">
+                <span class="icon">▶</span>
+                Start Practice
+            </button>
+            <button class="btn btn-secondary">
+                Guest Access
+            </button>
+        </div>
+        
+        <div class="demo-text">
+            Try: student / demo
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const colorOptions = document.querySelectorAll('.color-option');
+            const colorPicker = document.querySelector('.color-picker');
+            const body = document.body;
+            const container = document.querySelector('.container');
+            const infoBox = document.querySelector('.info-box');
+            const title = document.querySelector('h1');
+            const subtitle = document.querySelector('.subtitle');
+            const labels = document.querySelectorAll('.label');
+            const values = document.querySelectorAll('.value');
+            const demoText = document.querySelector('.demo-text');
+            const btnPrimary = document.querySelector('.btn-primary');
+            
+            let isDragging = false;
+            let currentOffsetX = 0;
+            let currentOffsetY = 0;
+            
+            // Initialize color picker position
+            colorPicker.style.left = 'calc(100% - 80px)';
+            colorPicker.style.top = '20px';
+            
+            // Make color picker draggable
+            colorPicker.addEventListener('mousedown', startDragging);
+            colorPicker.addEventListener('touchstart', startDragging);
+            
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('touchmove', drag);
+            document.addEventListener('mouseup', stopDragging);
+            document.addEventListener('touchend', stopDragging);
+            
+            function startDragging(e) {
+                isDragging = true;
+                colorPicker.classList.add('active');
+                
+                if (e.type === 'touchstart') {
+                    e.preventDefault();
+                }
+            }
+            
+            function drag(e) {
+                if (!isDragging) return;
+                
+                e.preventDefault();
+                
+                let clientX, clientY;
+                if (e.type === 'touchmove') {
+                    clientX = e.touches[0].clientX;
+                    clientY = e.touches[0].clientY;
+                } else {
+                    clientX = e.clientX;
+                    clientY = e.clientY;
+                }
+                
+                // Get container position
+                const containerRect = container.getBoundingClientRect();
+                
+                // Calculate position relative to container
+                const x = clientX - containerRect.left - colorPicker.offsetWidth / 2;
+                const y = clientY - containerRect.top - colorPicker.offsetHeight / 2;
+                
+                // Constrain within container bounds
+                const maxX = containerRect.width - colorPicker.offsetWidth;
+                const maxY = containerRect.height - colorPicker.offsetHeight;
+                
+                const boundedX = Math.max(0, Math.min(x, maxX));
+                const boundedY = Math.max(0, Math.min(y, maxY));
+                
+                colorPicker.style.left = boundedX + 'px';
+                colorPicker.style.top = boundedY + 'px';
+            }
+            
+            function stopDragging() {
+                isDragging = false;
+                colorPicker.classList.remove('active');
+            }
+            
+            // Color picker click handler
+            colorPicker.addEventListener('click', function() {
+                if (isDragging) return; // Don't trigger click if we were dragging
+                
+                // Cycle through colors
+                const colors = [
+                    { bg: '#2b6cb0', container: '#f8f9fa' },
+                    { bg: '#2d3748', container: '#e2e8f0' },
+                    { bg: '#805ad5', container: '#faf5ff' },
+                    { bg: '#d53f8c', container: '#fff5f7' },
+                    { bg: '#38a169', container: '#f0fff4' },
+                    { bg: '#dd6b20', container: '#fffaf0' }
+                ];
+                
+                // Get current color
+                const currentColor = getComputedStyle(colorPicker).backgroundColor;
+                const rgb = currentColor.match(/\d+/g);
+                
+                // Convert to hex
+                let currentHex = rgbToHex(parseInt(rgb[0]), parseInt(rgb[1]), parseInt(rgb[2]));
+                
+                // Find current color index
+                let currentIndex = colors.findIndex(color => color.bg.toLowerCase() === currentHex.toLowerCase());
+                
+                // Get next color
+                const nextIndex = (currentIndex + 1) % colors.length;
+                const nextColor = colors[nextIndex];
+                
+                // Update color picker
+                colorPicker.style.background = nextColor.bg;
+                
+                // Apply theme
+                applyTheme(nextColor.bg, nextColor.container);
+                
+                // Update active color option
+                colorOptions.forEach((option, index) => {
+                    option.classList.remove('active');
+                    if (index === nextIndex) {
+                        option.classList.add('active');
+                    }
+                });
+            });
+            
+            // Original color option click handlers
+            colorOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Remove active class from all options
+                    colorOptions.forEach(opt => opt.classList.remove('active'));
+                    
+                    // Add active class to clicked option
+                    this.classList.add('active');
+                    
+                    // Get color data
+                    const bgColor = this.getAttribute('data-bg');
+                    const containerColor = this.getAttribute('data-container');
+                    
+                    // Apply theme
+                    applyTheme(bgColor, containerColor);
+                    
+                    // Update color picker to match
+                    colorPicker.style.background = bgColor;
+                });
+            });
+            
+            // Function to apply theme
+            function applyTheme(bgColor, containerColor) {
+                // Change background gradient
+                body.style.background = `linear-gradient(135deg, ${bgColor} 0%, ${darkenColor(bgColor, 20)} 100%)`;
+                
+                // Change container background
+                container.style.background = containerColor;
+                infoBox.style.background = lightenColor(containerColor, 5);
+                
+                // Update button color to match theme
+                btnPrimary.style.background = bgColor;
+                btnPrimary.style.boxShadow = `0 4px 15px rgba(${hexToRgb(bgColor)}, 0.4)`;
+            }
+            
+            // Helper function to convert RGB to hex
+            function rgbToHex(r, g, b) {
+                return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+            }
+            
+            // Helper function to darken a hex color
+            function darkenColor(hex, percent) {
+                let r = parseInt(hex.substring(1, 3), 16);
+                let g = parseInt(hex.substring(3, 5), 16);
+                let b = parseInt(hex.substring(5, 7), 16);
+                
+                r = Math.floor(r * (100 - percent) / 100);
+                g = Math.floor(g * (100 - percent) / 100);
+                b = Math.floor(b * (100 - percent) / 100);
+                
+                return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+            }
+            
+            // Helper function to lighten a hex color
+            function lightenColor(hex, percent) {
+                let r = parseInt(hex.substring(1, 3), 16);
+                let g = parseInt(hex.substring(3, 5), 16);
+                let b = parseInt(hex.substring(5, 7), 16);
+                
+                r = Math.min(255, Math.floor(r + (255 - r) * percent / 100));
+                g = Math.min(255, Math.floor(g + (255 - g) * percent / 100));
+                b = Math.min(255, Math.floor(b + (255 - b) * percent / 100));
+                
+                return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+            }
+            
+            // Helper function to convert hex to RGB
+            function hexToRgb(hex) {
+                const r = parseInt(hex.substring(1, 3), 16);
+                const g = parseInt(hex.substring(3, 5), 16);
+                const b = parseInt(hex.substring(5, 7), 16);
+                return `${r}, ${g}, ${b}`;
+            }
+            
+            // Prevent context menu on color picker
+            colorPicker.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                return false;
+            });
+        });
+    </script>
+</body>
+</html>
